@@ -1,5 +1,4 @@
 require 'http'
-require 'ostruct'
 
 module DL
   class Client
@@ -14,6 +13,7 @@ module DL
       @app_id = options.delete(:app_id)
       @key = options.delete(:key)
       @endpoint = options.delete(:endpoint) || options.delete(:url)
+      @endpoint = "#{@endpoint}/" unless @endpoint.end_with? "/"
     end
 
     def keys
@@ -59,7 +59,7 @@ module DL
         'X-App-Id' => @app_id,
         'X-App-Key' => @key
       }
-      response = HTTP.with(headers).send method, "#{@endpoint}/#{segments}", :json => data
+      response = HTTP.with(headers).send method, "#{@endpoint}#{segments}", :json => data
       JSON.parse(response.to_s)
     end
 

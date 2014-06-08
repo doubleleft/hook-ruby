@@ -4,7 +4,7 @@ describe DL::Collection do
     DL::Client.new(
       :app_id => 1,
       :key => '0a5e6b4ab26bdf5f0da793346f96ad73',
-      :endpoint => 'http://dl-api.dev/api/index.php/'
+      :endpoint => 'http://dl-api.dev/api/index.php'
     )
   end
 
@@ -28,7 +28,28 @@ describe DL::Collection do
     expect(rows.length).to be == 0
   end
 
-  it "should filter items" do
+  it "general methods" do
+    created = subject.collection(:highscores).create(:player => "One", :score => 50)
+    expect(created['player']).to eq("One")
+    expect(created['score']).to eq(50)
+
+    subject.collection(:highscores).create(:player => "Two", :score => 100)
+    subject.collection(:highscores).create(:player => "Three", :score => 25)
+    subject.collection(:highscores).create(:player => "Four", :score => 10)
+    subject.collection(:highscores).create(:player => "Five", :score => 150)
+    subject.collection(:highscores).create(:player => "Six", :score => 125)
+
+    # .all
+    all = subject.collection(:highscores).all
+    expect(all.length).to be >= 6
+
+    # .first
+    five = subject.collection(:highscores).where(:player => "Five").first
+    expect(five.name).to eq("Five")
+
+    # .count
+    count = subject.collection(:highscores).where(:player => "Five").count
+    expect(count).to be >= 6
   end
 
 end
