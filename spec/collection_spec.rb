@@ -9,7 +9,9 @@ describe DL::Collection do
   end
 
   it "should create new items to collection" do
-    subject.create()
+    user = subject.collection(:users).create(:name => "Endel", :newsletter => true)
+    expect(user.name).to eq("Endel")
+    expect(user.newsletter).to eq(true)
   end
 
 end

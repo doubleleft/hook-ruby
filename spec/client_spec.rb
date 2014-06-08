@@ -1,4 +1,4 @@
-describe API::Client do
+describe DL::Client do
 
   subject do
     DL::Client.new(

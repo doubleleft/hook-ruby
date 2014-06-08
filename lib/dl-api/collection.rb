@@ -1,41 +1,154 @@
 module DL
   class Collection
 
-    def initialize name
-      @name = name
+    def initialize options = {}
+      @name = options.delete(:name)
+      @client = options.delete(:client) || DL::Client.instance
+      @segments = "collection/#{@name}"
+      reset!
     end
 
-    def create
+    def reset!
+      @wheres = []
+      @options = {}
+      @wheres = []
+      @ordering = []
+      @group = []
+      @limit = nil
+      @offset = nil
     end
 
-    # create = function(data)
-    # get = function()
-    # where = function(objects, _operation, _value)
-    # find = function(_id)
-    # group = function()
-    # count = function()
-    # max = function(field)
-    # min = function(field)
-    # avg = function(field)
-    # sum = function(field)
-    # first = function()
+    def find _id
+      @client.get "#{@segments}/#{_id}"
+    end
+
+    def first
+      @options[:first] = 1
+      self.query!
+    end
+
+    def create data
+      @client.post @segments, data
+    end
+
+    def remove _id = nil
+      path = @segments
+      path = "#{path}/#{_id}" if _id
+      @client.remove(path, build_query)
+    end
+    alias_method :delete, :remove
+
+    def where options = {}
+      options.each_pair do |k, value|
+        field = (k.respond_to?(:field) ? k.field : k).to_s
+        operation = k.respond_to?(:operation) ? k.operation : '='
+        @wheres << [field, operation, value]
+      end
+      self
+    end
+
+    def order fields
+      by_num = { 1 => 'asc', -1 => 'desc' }
+      ordering = []
+      fields.each_pair do |key, value|
+        ordering << [key.to_s, by_num[value] || value]
+      end
+      @ordering = ordering
+    end
+    alias_method :sort, :order
+
+    def limit int
+      @limit = int
+    end
+
+    def offset int
+      @offset = int
+    end
+
+    def all
+      query!
+    end
+
+    def query!
+      @client.get @segments, build_query
+    end
+
+    def method_missing method, *args, &block
+      if Enumerator.method_defined? method
+        Enumerator.new(self.all).send(method, args, block)
+      end
+
+      throw NoMethodError.new("#{self.class.name}: method '#{method}' not found")
+    end
+
+    def group *fields
+      @group = fields
+    end
+
+    def count
+      @options[:aggregation] = { :method => 'count', :field => nil }
+    end
+
+    def max field
+      @options[:aggregation] = { :method => :max, :field => field }
+    end
+
+    def min field
+      @options[:aggregation] = { :method => :min, :field => field }
+    end
+
+    def avg field
+      @options[:aggregation] = { :method => :avg, :field => field }
+    end
+
+    def sum field
+      @options[:aggregation] = { :method => :sum, :field => field }
+    end
+
+    def increment field, value = 1
+      @options[:operation] =  { :method => 'increment', :field => field, :value => value }
+    end
+
+    def decrement field, value = 1
+      @options[:operation] =  { :method => 'decrement', :field => field, :value => value }
+    end
+
+    def update _id, data
+      @client.post "#{@segments}/#{_id}", data
+    end
+
+    def update_all data
+      @options[:data] = data
+      @client.put @segments, build_query
+    end
+
+    def build_query
+      query = {}
+      query[:limit] = @limit if @limit
+      query[:offset] = @offset if @offset
+
+      query[:q] = @wheres unless @wheres.empty?
+      query[:s] = @ordering unless @ordering.empty?
+      query[:g] = @group unless @group.empty?
+
+      {
+        :paginate => 'p',
+        :first => 'f',
+        :aggregation => 'aggr',
+        :operation => 'op',
+        :data => 'data'
+      }.each_pair do |option, shortname|
+        query[ shortname ] = @options[ option ] if @options[ option ]
+      end
+
+      self.reset!
+      query
+    end
+
     # firstOrCreate = function(data)
-    # then = function()
-    # reset = function()
-    # sort = function(field, direction)
-    # limit = function(int)
-    # offset = function(int)
     # channel = function(options)
-    # paginate = function(perPage, onComplete, onError)
     # drop = function()
     # remove = function(_id)
-    # update = function(_id, data)
-    # increment = function(field, value)
-    # decrement = function(field, value)
-    # updateAll = function(data)
-    # addWhere = function(field, operation, value)
-    # _validateName = function(name)
-    # buildQuery = function() {
 
   end
 end

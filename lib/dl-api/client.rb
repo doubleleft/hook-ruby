@@ -1,10 +1,12 @@
 require 'http'
+require 'ostruct'
 
 module DL
-  class API
+  class Client
     class << self
+      attr_reader :instance
       def configure(options = {})
-        @client = self.new(options)
+        @instance = self.new(options)
       end
     end
 
@@ -27,36 +29,38 @@ module DL
     end
 
     def collection(name)
-      Collection.new(name)
+      Collection.new(:name => name, :client => self)
     end
 
     def channel
     end
 
-    def post segments
-      request :post, segments
+    def post segments, data
+      request :post, segments, data
     end
 
-    def get segments
-      request :get, segments
+    def get segments, data = {}
+      request :get, segments, data
     end
 
-    def put segments
-      request :put, segments
+    def put segments, data
+      request :put, segments, data
     end
 
-    alias_method :delete, :remove
-    def remove(segments)
+    def remove segments
       request :delete, segments
     end
+    alias_method :delete, :remove
 
     protected
-    def request method, segments, data
-      HTTP.with({
+    def request method, segments, data = {}
+      headers = {
         :accept => 'application/json',
         'X-App-Id' => @app_id,
         'X-App-Key' => @key
-      }).send method, "#{@endpoint}/#{segments}", :json => data
+      }
+      response = HTTP.with(headers).send method, "#{@endpoint}/#{segments}", :json => data
+      OpenStruct.new(JSON.parse(response.to_s))
     end
 
   end
