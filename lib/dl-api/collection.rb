@@ -87,30 +87,37 @@ module DL
 
     def count
       @options[:aggregation] = { :method => 'count', :field => nil }
+      self.query!
     end
 
     def max field
       @options[:aggregation] = { :method => :max, :field => field }
+      self.query!
     end
 
     def min field
       @options[:aggregation] = { :method => :min, :field => field }
+      self.query!
     end
 
     def avg field
       @options[:aggregation] = { :method => :avg, :field => field }
+      self.query!
     end
 
     def sum field
       @options[:aggregation] = { :method => :sum, :field => field }
+      self.query!
     end
 
     def increment field, value = 1
       @options[:operation] =  { :method => 'increment', :field => field, :value => value }
+      self.query!
     end
 
     def decrement field, value = 1
       @options[:operation] =  { :method => 'decrement', :field => field, :value => value }
+      self.query!
     end
 
     def update _id, data

@@ -47,8 +47,8 @@ module DL
       request :put, segments, data
     end
 
-    def remove segments
-      request :delete, segments
+    def remove segments, data = {}
+      request :delete, segments, data
     end
     alias_method :delete, :remove
 
@@ -60,7 +60,7 @@ module DL
         'X-App-Key' => @key
       }
       response = HTTP.with(headers).send method, "#{@endpoint}/#{segments}", :json => data
-      OpenStruct.new(JSON.parse(response.to_s))
+      JSON.parse(response.to_s)
     end
 
   end

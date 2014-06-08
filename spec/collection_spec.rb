@@ -10,8 +10,25 @@ describe DL::Collection do
 
   it "should create new items to collection" do
     user = subject.collection(:users).create(:name => "Endel", :newsletter => true)
-    expect(user.name).to eq("Endel")
-    expect(user.newsletter).to eq(true)
+    expect(user['name']).to eq("Endel")
+    expect(user['newsletter']).to eq(true)
+  end
+
+  it "should query for items" do
+    rows = subject.collection(:users).where(:name => "Endel").all
+    expect(rows.length).to be > 0
+  end
+
+  it "should delete all items" do
+    # create a dummy item
+    subject.collection(:users).create(:name => "Endel", :newsletter => true)
+    # remove every items
+    subject.collection(:users).delete
+    rows = subject.collection(:users).where(:name => "Endel").all
+    expect(rows.length).to be == 0
+  end
+
+  it "should filter items" do
   end
 
 end
