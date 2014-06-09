@@ -17,6 +17,8 @@ module DL
         include ActiveModel::AttributeMethods
         include ActiveModel::Serializers::JSON
         include ActiveModel::Serializers::Xml
+
+        field :_id
       end
     end
 
@@ -27,13 +29,21 @@ module DL
         attrs.each_pair do |name, value|
           self.send(:"#{name}=", value) if self.respond_to?(:"#{name}")
         end
+
+        # reset_changes
+        changes_applied if self._id
       end
 
       def save
-        # define_attribute_methods
-        # {attr_name}_will_change!
+        return false unless self.changed?
+
         changes_applied
-        # reset_changes
+        if self._id.nil?
+          self.attributes = @collection.update(self._id, attributes)
+        else
+          self.attributes = @collection.create(attributes)
+        end
+        self
       end
 
       def attributes=(attrs)

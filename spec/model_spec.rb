@@ -25,12 +25,17 @@ describe DL::Model do
     instance = MyCollection.new(:name => "Endel", :score => 100)
     expect(instance.name).to be == "Endel"
     expect(instance.score).to be == 100
+    expect(instance.changed?).to be == true
+    instance.save
+    expect(instance.changed?).to be == false
   end
 
   it "general methods" do
     instance = MyCollection.create(:name => "Endel", :score => 100)
     expect(instance.name).to be == "Endel"
     expect(instance.score).to be == 100
+    expect(instance.changed?).to be == false
+    expect(instance.save).to be == false
   end
 
   it "should create multiple" do
