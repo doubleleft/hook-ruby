@@ -35,7 +35,7 @@ module DL
       end
 
       def save
-        return false unless self.changed?
+        return false if !self.changed? || !self.valid?
 
         changes_applied
         if self._id.nil?

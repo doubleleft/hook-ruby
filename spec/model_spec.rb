@@ -2,6 +2,7 @@ class MyCollection
   include DL::Model
   field :name
   field :score
+  validates_presence_of :score
 end
 
 class CustomHighscore
@@ -19,6 +20,9 @@ describe DL::Model do
     instance.name = 'Endel'
     expect(instance.name).to be == 'Endel'
     expect(instance.name_changed?).to be == true
+
+    expect(instance.save).to be == false, "shouldn't save when model has validation errors"
+    expect(instance.errors.messages.length).to be == 1
   end
 
   it "should set default attributes" do
