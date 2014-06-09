@@ -19,7 +19,7 @@ describe DL::Collection do
     # create a dummy item
     subject.collection(:users).create(:name => "Endel", :newsletter => true)
     # remove every items
-    subject.collection(:users).delete
+    subject.collection(:users).delete_all
     rows = subject.collection(:users).where(:name => "Endel").all
     expect(rows.length).to be == 0
   end
@@ -27,15 +27,21 @@ describe DL::Collection do
   it "general methods" do
     subject.collection(:highscores).delete_all
 
-    created = subject.collection(:highscores).create(:player => "One", :score => 50)
+    one = created = subject.collection(:highscores).create(:player => "One", :score => 50)
     expect(created['player']).to eq("One")
     expect(created['score']).to eq(50)
 
-    subject.collection(:highscores).create(:player => "Two", :score => 100)
-    subject.collection(:highscores).create(:player => "Three", :score => 25)
-    subject.collection(:highscores).create(:player => "Four", :score => 10)
-    subject.collection(:highscores).create(:player => "Five", :score => 150)
-    subject.collection(:highscores).create(:player => "Six", :score => 125)
+    two = subject.collection(:highscores).create(:player => "Two", :score => 100)
+    three = subject.collection(:highscores).create(:player => "Three", :score => 25)
+    four = subject.collection(:highscores).create(:player => "Four", :score => 10)
+    five = subject.collection(:highscores).create(:player => "Five", :score => 150)
+    six = subject.collection(:highscores).create(:player => "Six", :score => 125)
+
+    # find multiple by id
+    rows = subject.collection(:highscores).find([two['_id'], three['_id']])
+    expect(rows.length).to be == 2
+    expect(rows[0]['player']).to be == 'Two'
+    expect(rows[1]['player']).to be == 'Three'
 
     # .all
     all = subject.collection(:highscores).all

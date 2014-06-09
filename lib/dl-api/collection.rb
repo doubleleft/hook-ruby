@@ -19,7 +19,11 @@ module DL
     end
 
     def find _id
-      @client.get "#{@segments}/#{_id}"
+      if _id.kind_of?(Array)
+        self.where(:_id.in => _id).all
+      else
+        @client.get "#{@segments}/#{_id}"
+      end
     end
 
     def first
@@ -36,7 +40,6 @@ module DL
       path = "#{path}/#{_id}" if _id
       @client.remove(path, build_query)
     end
-    alias_method :delete, :remove
 
     def delete_all
       self.remove(nil)
