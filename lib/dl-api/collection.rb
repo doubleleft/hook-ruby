@@ -49,6 +49,10 @@ module DL
       options.each_pair do |k, value|
         field = (k.respond_to?(:field) ? k.field : k).to_s
         operation = k.respond_to?(:operation) ? k.operation : '='
+
+        # Range syntatic sugar
+        value = [ value.first, value.last ] if value.kind_of?(Range)
+
         @wheres << [field, operation, value]
       end
       self

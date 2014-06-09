@@ -57,6 +57,12 @@ describe DL::Collection do
 
     count = subject.collection(:highscores).where(:score.lte => 25).count
     expect(count).to be == 2
+
+    count = subject.collection(:highscores).where(:score.between => 11..149).count
+    expect(count).to be == 4
+
+    count = subject.collection(:highscores).where(:player.ne => "One").count
+    expect(count).to be == 5
   end
 
 end
