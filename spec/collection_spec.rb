@@ -1,11 +1,7 @@
 describe DL::Collection do
 
   subject do
-    DL::Client.new(
-      :app_id => 1,
-      :key => '0a5e6b4ab26bdf5f0da793346f96ad73',
-      :endpoint => 'http://dl-api.dev/api/index.php'
-    )
+    DL::Client.instance
   end
 
   it "should create new items to collection" do
@@ -29,6 +25,8 @@ describe DL::Collection do
   end
 
   it "general methods" do
+    subject.collection(:highscores).delete_all
+
     created = subject.collection(:highscores).create(:player => "One", :score => 50)
     expect(created['player']).to eq("One")
     expect(created['score']).to eq(50)
@@ -45,11 +43,14 @@ describe DL::Collection do
 
     # .first
     five = subject.collection(:highscores).where(:player => "Five").first
-    expect(five.name).to eq("Five")
+    expect(five['player']).to eq("Five")
 
     # .count
-    count = subject.collection(:highscores).where(:player => "Five").count
-    expect(count).to be >= 6
+    count = subject.collection(:highscores).where(:score.lt => 25).count
+    expect(count).to be == 1
+
+    count = subject.collection(:highscores).where(:score.lte => 25).count
+    expect(count).to be == 2
   end
 
 end

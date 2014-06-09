@@ -38,6 +38,10 @@ module DL
     end
     alias_method :delete, :remove
 
+    def delete_all
+      self.remove(nil)
+    end
+
     def where options = {}
       options.each_pair do |k, value|
         field = (k.respond_to?(:field) ? k.field : k).to_s

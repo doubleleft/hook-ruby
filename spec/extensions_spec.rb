@@ -13,7 +13,7 @@ describe DL::Extensions do
     expect(lt.field).to eq(:field_lt)
 
     lte = :field_lte.lte
-    expect(lte.operation).to eq('=<')
+    expect(lte.operation).to eq('<=')
     expect(lte.field).to eq(:field_lte)
 
     ne = :field_ne.ne

@@ -6,7 +6,7 @@ module DL
         :gt => '>',
         :gte => '>=',
         :lt => '<',
-        :lte => '=<',
+        :lte => '<=',
         :ne => '!=',
         :in => 'in',
         :not_in => 'not_in',

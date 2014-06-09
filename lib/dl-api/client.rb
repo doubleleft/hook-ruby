@@ -1,4 +1,5 @@
 require 'http'
+require 'uri'
 
 module DL
   class Client
@@ -54,13 +55,20 @@ module DL
 
     protected
     def request method, segments, data = {}
-      headers = {
+      response = nil, headers = {
         :accept => 'application/json',
         'X-App-Id' => @app_id,
         'X-App-Key' => @key
       }
-      response = HTTP.with(headers).send method, "#{@endpoint}#{segments}", :json => data
-      JSON.parse(response.to_s)
+
+      if method == :get
+        segments = "#{segments}?#{URI::escape(data.to_json)}"
+        data = nil
+      end
+      response = HTTP.with(headers).send(method, "#{@endpoint}#{segments}", :json => data).to_s
+
+      # If JSON.parse don't suceed, return response as integer
+      JSON.parse(response) rescue response.to_i
     end
 
   end
