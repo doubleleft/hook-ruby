@@ -32,7 +32,13 @@ module DL
     end
 
     def create data
-      @client.post @segments, data
+      if data.kind_of?(Array)
+        # TODO: server should accept multiple items to create,
+        # instead of making multiple requests.
+        data.map {|item| self.create(item) }
+      else
+        @client.post @segments, data
+      end
     end
 
     def remove _id = nil

@@ -17,6 +17,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'http', '~> 0.6.0'
 
   spec.add_development_dependency('rspec', [">= 2.0.0"])
+  spec.add_development_dependency('activemodel', [">= 3.0.0"])
 
   # ensure the gem is built out of versioned files
   spec.files = Dir['Rakefile', '{bin,lib,man,test,spec}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
