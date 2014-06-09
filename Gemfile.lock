@@ -43,6 +43,7 @@ GEM
     thread_safe (0.3.4)
     tzinfo (1.2.0)
       thread_safe (~> 0.1)
+    yard (0.8.7.4)
 
 PLATFORMS
   ruby
@@ -51,3 +52,4 @@ DEPENDENCIES
   activemodel (>= 3.0.0)
   dl-api!
   rspec (>= 2.0.0)
+  yard
