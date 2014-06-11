@@ -24,6 +24,9 @@ module DL
 
     module InstanceMethods
       def initialize(attrs = {})
+        # is DL::Client configured?
+        throw RuntimeError.new("Please use DL::Client.configure.") unless DL::Client.instance
+
         @collection = DL::Client.instance.collection(self.class.collection_name)
         self.attributes = {}
         attrs.each_pair do |name, value|

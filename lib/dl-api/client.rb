@@ -15,6 +15,8 @@ module DL
       @key = options.delete(:key)
       @endpoint = options.delete(:endpoint) || options.delete(:url)
       @endpoint = "#{@endpoint}/" unless @endpoint.end_with? "/"
+
+      @logger = options.delete(:logger)
     end
 
     def keys
@@ -33,7 +35,12 @@ module DL
       Collection.new(:name => name, :client => self)
     end
 
+    def logger=(logger)
+      @logger = logger
+    end
+
     def channel
+      throw RuntimeError.new('Not implemented.')
     end
 
     def post segments, data
@@ -65,7 +72,16 @@ module DL
         segments = "#{segments}?#{URI::escape(data.to_json)}"
         data = nil
       end
+
+      if @logger
+        start_time = Time.now
+      end
+
       response = HTTP.with(headers).send(method, "#{@endpoint}#{segments}", :json => data).to_s
+
+      if @logger
+        @logger.info "#{self.class.name} - #{(Time.now - start_time).round(3)}s - #{method.upcase} #{@endpoint}#{segments}"
+      end
 
       # If JSON.parse don't suceed, return response as integer
       JSON.parse(response) rescue response.to_i
