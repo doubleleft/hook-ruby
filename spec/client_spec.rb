@@ -1,7 +1,7 @@
-describe DL::Client do
+describe Hook::Client do
 
   subject do
-    DL::Client.instance
+    Hook::Client.instance
   end
 
   it "" do

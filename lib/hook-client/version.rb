@@ -1,3 +1,3 @@
-module DL
+module Hook
   VERSION = '0.1.0'
 end

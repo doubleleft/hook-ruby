@@ -1,4 +1,4 @@
-module DL
+module Hook
   class Auth
   end
 end

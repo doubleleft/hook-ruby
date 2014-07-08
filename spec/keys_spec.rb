@@ -1,7 +1,7 @@
-describe DL::Keys do
+describe Hook::Keys do
 
   subject do
-    DL::Client.instance
+    Hook::Client.instance
   end
 
   it "should get and set keys" do

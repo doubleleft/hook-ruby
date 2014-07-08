@@ -1,9 +1,9 @@
-module DL
+module Hook
   class Collection
 
     def initialize options = {}
       @name = options.delete(:name)
-      @client = options.delete(:client) || DL::Client.instance
+      @client = options.delete(:client) || Hook::Client.instance
       @segments = "collection/#{@name}"
       reset!
     end

@@ -1,7 +1,7 @@
 require 'http'
 require 'uri'
 
-module DL
+module Hook
   class Client
     class << self
       attr_reader :instance

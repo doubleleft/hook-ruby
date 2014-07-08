@@ -1,8 +1,8 @@
-module DL
+module Hook
   class Keys
 
     def initialize(options={})
-      @client = options.delete(:client) || DL::Client.instance
+      @client = options.delete(:client) || Hook::Client.instance
     end
 
     def get(key)

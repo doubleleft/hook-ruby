@@ -1,17 +1,17 @@
 class MyCollection
-  include DL::Model
+  include Hook::Model
   field :name
   field :score
   validates_presence_of :score
 end
 
 class CustomHighscore
-  include DL::Model
+  include Hook::Model
   field :name
   field :score
 end
 
-describe DL::Model do
+describe Hook::Model do
   it "should respond to activemodel dirty methods" do
     instance = MyCollection.new
     expect(instance.name).to be_nil

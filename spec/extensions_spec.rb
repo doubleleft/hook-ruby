@@ -1,4 +1,4 @@
-describe DL::Extensions do
+describe Hook::Extensions do
   it "should extend core Ruby classes" do
     gt = :field_gt.gt
     expect(gt.operation).to eq('>')

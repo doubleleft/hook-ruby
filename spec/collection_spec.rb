@@ -1,7 +1,7 @@
-describe DL::Collection do
+describe Hook::Collection do
 
   subject do
-    DL::Client.instance
+    Hook::Client.instance
   end
 
   it "should create new items to collection" do

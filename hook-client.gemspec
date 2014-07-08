@@ -1,16 +1,16 @@
-require File.expand_path("../lib/dl-api/version", __FILE__)
+require File.expand_path("../lib/hook-client/version", __FILE__)
 
 Gem::Specification.new do |spec|
-  spec.name    = 'dl-api'
+  spec.name    = 'hook-client'
   spec.version = DL::VERSION
   spec.date    = Date.today.to_s
 
-  spec.summary = "dl-api ruby client"
-  spec.description = "dl-api client for ruby"
+  spec.summary = "Hook Ruby Client"
+  spec.description = "Hook Client for Ruby"
 
   spec.authors  = ['Endel Dreyer']
   spec.email    = 'edreyer@doubleleft.com'
-  spec.homepage = 'http://github.com/doubleleft/dl-api-ruby'
+  spec.homepage = 'http://github.com/doubleleft/hook-ruby'
 
   spec.add_dependency 'rake'
   spec.add_dependency 'addressable', '~> 2.3'

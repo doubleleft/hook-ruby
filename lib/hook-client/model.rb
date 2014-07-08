@@ -1,6 +1,6 @@
 require 'active_model'
 
-module DL
+module Hook
   #
   # Provides ActiveRecord/like methods for querying Collections
   #
@@ -24,10 +24,10 @@ module DL
 
     module InstanceMethods
       def initialize(attrs = {})
-        # is DL::Client configured?
-        throw RuntimeError.new("Please use DL::Client.configure.") unless DL::Client.instance
+        # is Hook::Client configured?
+        throw RuntimeError.new("Please use Hook::Client.configure.") unless Hook::Client.instance
 
-        @collection = DL::Client.instance.collection(self.class.collection_name)
+        @collection = Hook::Client.instance.collection(self.class.collection_name)
         self.attributes = {}
         attrs.each_pair do |name, value|
           self.send(:"#{name}=", value) if self.respond_to?(:"#{name}")
@@ -71,7 +71,7 @@ module DL
           throw RuntimeError.new(res['error']) unless res['error'].nil?
         end
 
-        if (res.kind_of?(DL::Collection))
+        if (res.kind_of?(Hook::Collection))
           self
         else
           (res.kind_of?(Array)) ? res.map {|r| self.class.new(r) } : self.class.new(res)
