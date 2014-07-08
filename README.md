@@ -28,7 +28,7 @@ Set-up with your credentials:
 Hook::Client.configure(
   :app_id => 1,
   :key => "1f143fde82d14643099ae45e6c98c8e1",
-  :endpoint => "https://dl-api.heroku.com"u
+  :endpoint => "https://dl-api.heroku.com"
 )
 ```
 
