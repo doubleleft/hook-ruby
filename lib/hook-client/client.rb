@@ -65,7 +65,8 @@ module Hook
       response = nil, headers = {
         :accept => 'application/json',
         'X-App-Id' => @app_id,
-        'X-App-Key' => @key
+        'X-App-Key' => @key,
+        'User-Agent' => "hook-ruby"
       }
 
       if method == :get
