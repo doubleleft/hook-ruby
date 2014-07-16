@@ -51,7 +51,7 @@ module Hook
       self.remove(nil)
     end
 
-    def where options = {}
+    def where options = {}, operation = 'and'
       options.each_pair do |k, value|
         field = (k.respond_to?(:field) ? k.field : k).to_s
         operation = k.respond_to?(:operation) ? k.operation : '='
@@ -59,9 +59,13 @@ module Hook
         # Range syntatic sugar
         value = [ value.first, value.last ] if value.kind_of?(Range)
 
-        @wheres << [field, operation, value]
+        @wheres << [field, operation, value, operation]
       end
       self
+    end
+
+    def or_where options = {}
+      self.where(options, 'or')
     end
 
     def order fields
@@ -96,6 +100,14 @@ module Hook
       end
 
       throw NoMethodError.new("#{self.class.name}: method '#{method}' not found")
+    end
+
+    def select *fields
+      @options[:select] = fields
+    end
+
+    def with *relationships
+      @options[:with] = relationships
     end
 
     def group *fields
@@ -160,7 +172,9 @@ module Hook
         :first => 'f',
         :aggregation => 'aggr',
         :operation => 'op',
-        :data => 'data'
+        :data => 'data',
+        :with => 'with',
+        :select => 'select',
       }.each_pair do |option, shortname|
         query[ shortname ] = @options[ option ] if @options[ option ]
       end
