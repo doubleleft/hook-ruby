@@ -114,8 +114,8 @@ module Hook
       @group = fields
     end
 
-    def count
-      @options[:aggregation] = { :method => 'count', :field => nil }
+    def count field = '*'
+      @options[:aggregation] = { :method => 'count', :field => field }
       self.query!
     end
 
