@@ -39,8 +39,9 @@ module Hook
       @logger = logger
     end
 
-    def channel
-      throw RuntimeError.new('Not implemented.')
+    def channel(name, options = {})
+      throw NotImplementedError.new("channels not implemented")
+      Channel.create(self, name, options)
     end
 
     def post segments, data

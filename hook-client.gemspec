@@ -2,14 +2,14 @@ require File.expand_path("../lib/hook-client/version", __FILE__)
 
 Gem::Specification.new do |spec|
   spec.name    = 'hook-client'
-  spec.version = DL::VERSION
+  spec.version = Hook::VERSION
   spec.date    = Date.today.to_s
 
   spec.summary = "Hook Ruby Client"
   spec.description = "Hook Client for Ruby"
 
   spec.authors  = ['Endel Dreyer']
-  spec.email    = 'edreyer@doubleleft.com'
+  spec.email    = 'endel@doubleleft.com'
   spec.homepage = 'http://github.com/doubleleft/hook-ruby'
 
   spec.add_dependency 'rake'

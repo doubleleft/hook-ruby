@@ -4,7 +4,7 @@ module Hook
 
   autoload :Keys, 'hook-client/keys'
   autoload :Collection, 'hook-client/collection'
-  autoload :Query, 'hook-client/collection'
+  autoload :Channel, 'hook-client/channel'
   autoload :Model, 'hook-client/model'
 
   autoload :Extensions, 'hook-client/extensions'

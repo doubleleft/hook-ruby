@@ -4,20 +4,16 @@ module Hook
     def initialize options = {}
       @name = options.delete(:name)
       @client = options.delete(:client) || Hook::Client.instance
-      @segments = "collection/#{@name}"
+
+      segment = options.delete(:channel) ? "channel" : "collection"
+      @segments = "#{segment}/#{@name}"
       reset!
     end
 
-    def reset!
-      @wheres = []
-      @options = {}
-      @wheres = []
-      @ordering = []
-      @group = []
-      @limit = nil
-      @offset = nil
-    end
-
+    # Find item by _id.
+    #
+    # @param _id [String]
+    # @return [Hash]
     def find _id
       if _id.kind_of?(Array)
         self.where(:_id.in => _id).all
@@ -26,11 +22,16 @@ module Hook
       end
     end
 
+    # Return only the first result from the database
     def first
       @options[:first] = 1
       self.query!
     end
 
+    # Create an item into the collection
+    #
+    # @param data [Hash, Array] item or array of items
+    # @return [Hash, Array]
     def create data
       if data.kind_of?(Array)
         # TODO: server should accept multiple items to create,
@@ -41,18 +42,55 @@ module Hook
       end
     end
 
+    # Retrieve the first item with the given params in the database,
+    # if not found this will create one.
+    #
+    # @param data [Hash] query and data to store
+    # @return [Hash]
+    def first_or_create data
+      @options[:first] = 1
+      @options[:data] = data
+      @client.post(@segments, self.build_query)
+    end
+
+    # Remove items by id, or by query
+    #
+    # @param _id [String, nil] _id
+    # @return [Hash] status of the operation (ex: {success: true, affected_rows: 7})
     def remove _id = nil
       path = @segments
       path = "#{path}/#{_id}" if _id
       @client.remove(path, build_query)
     end
 
+    # Remove items by query. This is the same as calling `remove` without `_id` param.
+    # @see remove
     def delete_all
       self.remove(nil)
     end
 
-    def where options = {}, operation = 'and'
-      options.each_pair do |k, value|
+    # Add where clause to the current query.
+    #
+    # Supported modifiers on fields: .gt, .gte, .lt, .lte, .ne, .in, .not_in, .nin, .like, .between, .not_between
+    #
+    # @param fields [Hash] fields and values to filter
+    # @param [String] operation (and, or)
+    #
+    # @example
+    #     hook.collection(:movies).where({
+    #       :name => "Hook",
+    #       :year.gt => 1990
+    #     })
+    #
+    # @example Using Range
+    #     hook.collection(:movies).where({
+    #       :name.like => "%panic%",
+    #       :year.between => 1990..2014
+    #     })
+    #
+    # @return [Collection] self
+    def where fields = {}, operation = 'and'
+      fields.each_pair do |k, value|
         field = (k.respond_to?(:field) ? k.field : k).to_s
         operation = k.respond_to?(:operation) ? k.operation : '='
 
@@ -64,10 +102,17 @@ module Hook
       self
     end
 
-    def or_where options = {}
-      self.where(options, 'or')
+    # Add where clause with 'OR' operation to the current query.
+    # @param fields [Hash] fields and values to filter
+    # @return [Collection] self
+    def or_where fields = {}
+      self.where(fields, 'or')
     end
 
+    # Add order clause to the query.
+    #
+    # @param fields [String] ...
+    # @return [Collection] self
     def order fields
       by_num = { 1 => 'asc', -1 => 'desc' }
       ordering = []
@@ -75,19 +120,33 @@ module Hook
         ordering << [key.to_s, by_num[value] || value]
       end
       @ordering = ordering
+      self
     end
     alias_method :sort, :order
 
+    # Limit the number of results to retrieve.
+    #
+    # @param int [Integer]
+    # @return [Collection] self
     def limit int
       @limit = int
+      self
     end
 
+    # @param int [Integer]
+    # @return [Collection] self
     def offset int
       @offset = int
+      self
     end
 
-    def all
-      query!
+    # Run the query, and return all it's results.
+    # @yield You may use a block with all returned results
+    # @return [Array]
+    def all(&block)
+      rows = query!
+      yield rows if block_given?
+      rows
     end
 
     def query!
@@ -102,16 +161,43 @@ module Hook
       throw NoMethodError.new("#{self.class.name}: method '#{method}' not found")
     end
 
+    # Specify the target field names to retrieve
+    #
+    # @param fields [String] ...
+    # @return [Collection] self
     def select *fields
       @options[:select] = fields
     end
 
+    # Return related collection's data
+    #
+    # @param relationships [String] ...
+    #
+    # @example Retrieving a single relation
+    #     hook.collection(:books).with(:publisher).each do |book|
+    #       puts book[:name]
+    #       puts book[:publisher][:name]
+    #     end
+    #
+    # @example Retrieving multiple relations
+    #     hook.collection(:books).with(:publisher, :author).each do |book|
+    #       puts book[:name]
+    #       puts book[:publisher][:name]
+    #       puts book[:author][:name]
+    #     end
+    #
+    # @return [Collection] self
     def with *relationships
       @options[:with] = relationships
+      self
     end
 
+    # Group query results
+    # @param fields [String] ...
+    # @return [Collection] self
     def group *fields
       @group = fields
+      self
     end
 
     def count field = '*'
@@ -183,11 +269,17 @@ module Hook
       query
     end
 
-    # firstOrCreate = function(data)
-    # channel = function(options)
-    # drop = function()
-    # remove = function(_id)
+    protected
+
+    def reset!
+      @wheres = []
+      @options = {}
+      @wheres = []
+      @ordering = []
+      @group = []
+      @limit = nil
+      @offset = nil
+    end
 
   end
 end
-
