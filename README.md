@@ -1,7 +1,10 @@
 hook-ruby client
 ===
 
+ruby client for [hook](github.com/doubleleft/hook/).
+
 Getting started:
+---
 
 ```ruby
 # Gemfile
@@ -51,3 +54,8 @@ familiar with.
 You will be able to use any
 [ActiveModel](https://github.com/rails/rails/tree/master/activemodel) goodies,
 such as validation, serialization and dirty methods.
+
+License
+---
+
+MIT
