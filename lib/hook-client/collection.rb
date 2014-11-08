@@ -92,12 +92,12 @@ module Hook
     def where fields = {}, operation = 'and'
       fields.each_pair do |k, value|
         field = (k.respond_to?(:field) ? k.field : k).to_s
-        operation = k.respond_to?(:operation) ? k.operation : '='
+        comparation = k.respond_to?(:comparation) ? k.comparation : '='
 
         # Range syntatic sugar
         value = [ value.first, value.last ] if value.kind_of?(Range)
 
-        @wheres << [field, operation, value, operation]
+        @wheres << [field, comparation, value, operation]
       end
       self
     end

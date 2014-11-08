@@ -15,9 +15,9 @@ module DL
         :between => 'between',
         :not_between => 'not_between',
         # :max_distance,
-      }.each_pair do |method, operation|
+      }.each_pair do |method, comparation|
         define_method(method) do
-          OpenStruct.new(:field => self, :operation => operation)
+          OpenStruct.new(:field => self, :comparation => comparation)
         end
       end
 

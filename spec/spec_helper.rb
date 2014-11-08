@@ -1,18 +1,15 @@
 $: << File.expand_path('../lib')
 require 'hook-client'
 require 'logger'
+require 'json'
 
 logger = Logger.new(STDOUT)
+app = JSON.parse(File.open('spec/app.json').read)
+app_key = app['keys'].select{|k| k['type'] == 'server' }.first
 
 Hook::Client.configure(
-  # :app_id => 1,
-  # :key => '0a5e6b4ab26bdf5f0da793346f96ad73',
-  # # :app_id => 10,
-  # # :key => '1f143fde82d14643099ae45e6c98c8e1',
-  # :endpoint => 'http://dl-api.dev/api/index.php/'
-
-  :app_id => 1,
-  :key => '57acfb1a9fa3bcc8d9b72016884b1601',
-  :endpoint => 'http://dl-api.herokuapp.com/',
-  :logger => logger
+  :app_id => app_key['app_id'],
+  :key => app_key['key'],
+  :endpoint => 'http://hook.dev/public/index.php/'
+  # :logger => logger
 )

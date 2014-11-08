@@ -1,0 +1,23 @@
+language: php
+php:
+  - 5.6
+
+before_script:
+  # install hook server
+  - git clone --depth=1 https://github.com/doubleleft/hook.git
+  - travis_retry composer self-update
+  - travis_retry composer install --no-dev --prefer-dist -d hook
+  - cd ./hook && sh ./.travis/install_server.sh && cd -
+
+  # create default app for testing
+  - curl -XPOST http://hook.dev/index.php/apps --data '{"app":{"name":"hook-ruby"}}' > spec/app.json
+  - cat spec/app.json
+
+  # install javascript dependencies and compile dist files
+  - sudo apt-get update
+  - sudo apt-get install ruby
+  - gem install bundler
+  - bundle install
+
+script:
+  - bundle exec rspec spec/

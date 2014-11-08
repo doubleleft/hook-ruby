@@ -86,7 +86,7 @@ module Hook
       end
 
       # If JSON.parse don't suceed, return response as integer
-      JSON.parse(response) rescue response.to_i
+      JSON.parse(response) rescue JSON.parse("{\"value\":#{response}}")['value'] rescue response.to_i
     end
 
   end

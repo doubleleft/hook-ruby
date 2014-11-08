@@ -1,7 +1,10 @@
-hook-ruby client
+hook-ruby client ![Build status](https://travis-ci.org/doubleleft/hook-ruby.svg?branch=master)
 ===
 
-ruby client for [hook](github.com/doubleleft/hook/). [API Reference](doubleleft.github.io/hook-ruby).
+ruby client for [hook](github.com/doubleleft/hook/).
+
+- [API Reference](http://doubleleft.github.io/hook-ruby).
+- [RubyGem](http://rubygems.org/gems/hook-client)
 
 Getting started:
 ---
@@ -23,7 +26,7 @@ puts client.collection(:posts).where(:title => "Getting Started").count
 For more examples, please see [our tests](spec).
 
 Using it with Rails
-===
+---
 
 Set-up with your credentials:
 

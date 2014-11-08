@@ -10,8 +10,7 @@ module Hook
     # @param key [String, Symbol]
     # @return [Object] value
     def get(key)
-      response = @client.get("key/#{key}");
-      (!response.empty?) ? response['value'] : nil
+      @client.get("key/#{key}")
     end
 
     # Store serialized value
