@@ -1,7 +1,7 @@
 hook-ruby client
 ===
 
-ruby client for [hook](github.com/doubleleft/hook/).
+ruby client for [hook](github.com/doubleleft/hook/). [API Reference](doubleleft.github.io/hook-ruby).
 
 Getting started:
 ---
